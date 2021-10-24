@@ -1,0 +1,31 @@
+.my-footer {
+    height: 5em;
+    background-color: #ed8643;
+    margin-top: 1.5em;
+    padding: 1em;
+    color: aliceblue;
+    font-size: x-large;
+
+}
+
+html, body {
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+.popup-form {
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+.datepicker {
+    z-index: 10000;
+}
+.room-image {
+    max-width: 50%;
+}
+
+/* override styles here */
+.notie-container {
+    box-shadow: none;
+}
