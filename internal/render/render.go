@@ -3,17 +3,16 @@ package render
 import (
 	"bytes"
 	"fmt"
-	"github.com/WilliamAinsworth/bookings/pkg/config"
-	"github.com/WilliamAinsworth/bookings/pkg/models"
+	"github.com/WilliamAinsworth/bookings/internal/config"
+	"github.com/WilliamAinsworth/bookings/internal/models"
+	"github.com/justinas/nosurf"
 	"html/template"
 	"log"
 	"net/http"
 	"path/filepath"
 )
 
-var functions = template.FuncMap {
-
-}
+var functions = template.FuncMap{}
 
 var app *config.AppConfig
 
@@ -22,12 +21,14 @@ func NewTemplate(a *config.AppConfig) {
 	app = a
 }
 
-func AddDefaultData(templateData *models.TemplateData) *models.TemplateData {
+// Add DefaultData adds data for all templates
+func AddDefaultData(templateData *models.TemplateData, request *http.Request) *models.TemplateData {
+	templateData.CSRFToken = nosurf.Token(request)
 	return templateData
 }
 
 // RenderTemplate renders template using http/template
-func RenderTemplate(w http.ResponseWriter, tmpl string, templateData *models.TemplateData) {
+func RenderTemplate(w http.ResponseWriter, request *http.Request, tmpl string, templateData *models.TemplateData) {
 	var templateCache map[string]*template.Template
 
 	// if UseCache is true then read the info from the template cache
@@ -47,7 +48,7 @@ func RenderTemplate(w http.ResponseWriter, tmpl string, templateData *models.Tem
 	buf := new(bytes.Buffer)
 
 	// add data that should be available to all pages
-	templateData = AddDefaultData(templateData)
+	templateData = AddDefaultData(templateData, request)
 
 	// renders the page
 	_ = t.Execute(buf, templateData)
@@ -56,7 +57,6 @@ func RenderTemplate(w http.ResponseWriter, tmpl string, templateData *models.Tem
 	if err != nil {
 		fmt.Println("Error writing template to browser")
 	}
-
 
 	//parsedTemplate, _ :=  template.ParseFiles("./templates/" + tmpl)
 	//err = parsedTemplate.Execute(w, nil)

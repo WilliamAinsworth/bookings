@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
-	"github.com/WilliamAinsworth/bookings/pkg/config"
-	"github.com/WilliamAinsworth/bookings/pkg/handlers"
-	"github.com/WilliamAinsworth/bookings/pkg/render"
+	"github.com/WilliamAinsworth/bookings/internal/config"
+	"github.com/WilliamAinsworth/bookings/internal/handlers"
+	"github.com/WilliamAinsworth/bookings/internal/render"
 	"github.com/alexedwards/scs/v2"
 	"log"
 	"net/http"
@@ -12,6 +12,7 @@ import (
 )
 
 const portNumber = ":8080"
+
 var app config.AppConfig
 var session *scs.SessionManager
 
@@ -28,7 +29,6 @@ func main() {
 
 	app.Session = session
 
-
 	templateCache, err := render.CreateTemplateCache()
 	if err != nil {
 		log.Fatal("cannot create template cache")
@@ -44,9 +44,8 @@ func main() {
 	fmt.Println(fmt.Sprintf("Starting application on port %s", portNumber))
 
 	srv := &http.Server{
-		Addr: portNumber,
+		Addr:    portNumber,
 		Handler: routes(&app),
-
 	}
 
 	err = srv.ListenAndServe()
