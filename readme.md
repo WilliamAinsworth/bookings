@@ -6,3 +6,9 @@ This is the repository for my bookings project.
 - Uses the [alex edwards SCS session management](http://github.com/alexedwards/scs)
 - Uses the [chi router](http://github.com/go-chi/chi)
 - Uses [nosurf](http://github.com/justinas/nosurf)
+
+## Setup
+
+### Testing
+
+go test -coverprofile=coverage.out && go tool cover -html=coverage.out
