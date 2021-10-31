@@ -3,7 +3,6 @@ package forms
 import (
 	"fmt"
 	"github.com/asaskevich/govalidator"
-	"net/http"
 	"net/url"
 	"strings"
 )
@@ -38,9 +37,9 @@ func (f *Form) Required(fields ...string) {
 }
 
 // Has checks if form field is in post and not empty
-func (f *Form) Has(field string, r *http.Request) bool {
-	x := r.Form.Get(field)
-	if x == "" {
+func (f *Form) Has(field string) bool {
+	entry := f.Get(field)
+	if entry == "" {
 		f.Errors.Add(field, "This field cannot be empty")
 		return false
 	}
@@ -48,8 +47,8 @@ func (f *Form) Has(field string, r *http.Request) bool {
 }
 
 // MinLength checks for string minimum length, returns true if meets minimum length
-func (f *Form) MinLength(field string, minLength int, r *http.Request) bool {
-	entry := r.Form.Get(field)
+func (f *Form) MinLength(field string, minLength int) bool {
+	entry := f.Get(field)
 	if len(entry) < minLength {
 		f.Errors.Add(field, fmt.Sprintf("This field must be at least %d characters long", minLength))
 		return false

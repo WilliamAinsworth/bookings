@@ -2,12 +2,12 @@ package render
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
 	"github.com/WilliamAinsworth/bookings/internal/config"
 	"github.com/WilliamAinsworth/bookings/internal/models"
 	"github.com/justinas/nosurf"
 	"html/template"
-	"log"
 	"net/http"
 	"path/filepath"
 )
@@ -32,7 +32,7 @@ func AddDefaultData(templateData *models.TemplateData, request *http.Request) *m
 }
 
 // RenderTemplate renders template using http/template
-func RenderTemplate(w http.ResponseWriter, request *http.Request, tmpl string, templateData *models.TemplateData) {
+func RenderTemplate(w http.ResponseWriter, request *http.Request, tmpl string, templateData *models.TemplateData) error {
 	var templateCache map[string]*template.Template
 
 	// if UseCache is true then read the info from the template cache
@@ -45,7 +45,7 @@ func RenderTemplate(w http.ResponseWriter, request *http.Request, tmpl string, t
 
 	t, ok := templateCache[tmpl]
 	if !ok {
-		log.Fatal("Could not get template from cache")
+		return errors.New("could not get template from cache")
 	}
 
 	// holds bytes (parsed template)
@@ -60,7 +60,10 @@ func RenderTemplate(w http.ResponseWriter, request *http.Request, tmpl string, t
 	_, err := buf.WriteTo(w)
 	if err != nil {
 		fmt.Println("Error writing template to browser")
+		return err
 	}
+
+	return nil
 
 	//parsedTemplate, _ :=  template.ParseFiles("./templates/" + tmpl)
 	//err = parsedTemplate.Execute(w, nil)
